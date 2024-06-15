@@ -46,7 +46,8 @@
     min-height: 10px;
     border-radius: 5px;
     /* background-color: rgb(240, 84, 28); */
-    background-color: rgb(236, 98, 48);
+    /* background-color: rgb(236, 98, 48); */
+    background: linear-gradient(98.37deg, #f89e00 0.99%, #da2f68 100%);
     top: -8px;
     right: -8px;
 }
@@ -65,7 +66,8 @@
 
 .navbar button:hover {
     /* background-color: #fff4f2; */
-    background-color: rgb(236, 98, 48);
+    /* background-color: rgb(236, 98, 48); */
+    background: linear-gradient(98.37deg, #f89e00 0.99%, #da2f68 100%);
     /* background-color: tomato; */
     /* background-color: orangered; */
     color: #141414;
