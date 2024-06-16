@@ -21,6 +21,7 @@
     display: flex;
     align-items: center;
     gap: 40px;
+    cursor: pointer;
 }
 
 .navbar-right img:hover {
@@ -36,11 +37,11 @@
     cursor: pointer;
 }
 
-.navbar-search-icon {
+.navbar-basket-icon {
     position: relative;
 }
 
-.navbar-search-icon .dot{
+.navbar-basket-icon .dot{
     position: absolute;
     min-width: 10px;
     min-height: 10px;
@@ -73,14 +74,55 @@
     color: #141414;
 }
 
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
+@media (max-width: 1050px) {
+    .navbar .logo {
+        width: 140px;
     }
 
     .navbar-menu {
-        flex-direction: column;
-        gap: 1rem;
+        gap: 20px;
+        font-size: 17px;
+    }
+
+    .navbar-right {
+        gap: 30px;
+    }
+
+    .navbar-right img {
+        width: 22px;
+    }
+
+    .navbar-right button {
+        padding: 8px 25px;
+    }
+}
+
+@media (max-width: 900px) {
+    .navbar .logo {
+        width: 120px;
+    }
+
+    .navbar-menu {
+        gap: 15px;
+        font-size: 16px;
+    }
+
+    .navbar-right {
+        gap: 20px;
+    }
+
+    .navbar-right img {
+        width: 20px;
+    }
+
+    .navbar-right button {
+        padding: 7px 20px;
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 750px) {
+    .navbar-menu {
+        display: none;
     }
 }
