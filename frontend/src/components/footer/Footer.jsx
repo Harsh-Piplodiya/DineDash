@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="footer-content">
             <div className="footer-content-left">
                 <img src={assets.dineDash} alt="dineDash logo" />
-                <p>DineDash brings the best local restaurants straight to your door. From your favorite comfort foods to exotic flavors, we have it all. Our mission is to deliver deliciousness with convenience with a pinch of dash.</p>
+                <p>DineDash brings the best local restaurants straight to your door. From your favorite comfort foods to exotic flavors, we have it all. Our mission is to deliver deliciousness with convenience and a pinch of dash.</p>
                 <div className="footer-social-icons">
                     <img src={assets.github_icon} alt="linkedin" />
                     <img src={assets.linkedin_icon} alt="twitter" />
