@@ -27,7 +27,8 @@ const addFoodItem = asyncHandler(async (req, res) => {
         description,
         price,
         category,
-        image: img.url
+        // image: img.url
+        image: [img.url, img.public_id]
     });
 
     try {
@@ -49,10 +50,13 @@ const listFoodItems = asyncHandler(async (req, res) => {
 
 const removeFoodItems = asyncHandler(async (req, res) => {
     try {
-        // const food = await Food.findById(req.body.id);
+        const food = await Food.findById(req.body.id);
         // console.log(food);
         // console.log(food.image);
-        // await deleteFromCloudinary(food.image);
+        // to be able to delete the uploaded file from Cloudinary we needed it's public_id, inorder to get that,
+        // we changed the type of image from string to an array to be able to store both the url, 
+        // as well as the puclic_id and using that we're now able to delete the uploaded image from Cloudinary.
+        await deleteFromCloudinary(food.image[1]);
         await Food.findByIdAndDelete(req.body.id);
         return res.status(201).json(new ApiResponse(201, removeFoodItems, "Food Item removed from database successfully!"));
     } catch (error) {
