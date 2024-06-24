@@ -2,10 +2,10 @@ import { Router } from 'express';
 import { addFoodItem, listFoodItems, removeFoodItems } from '../controllers/food.controller.js';
 import { upload } from '../middleware/multer.middleware.js';
 
-const router = Router();
+const foodRouter = Router();
 
-router.route("/add").post(upload.single("image"), addFoodItem);
-router.route("/list").get(listFoodItems);
-router.route("/remove").post(removeFoodItems);
+foodRouter.route("/add").post(upload.single("image"), addFoodItem);
+foodRouter.route("/list").get(listFoodItems);
+foodRouter.route("/remove").post(removeFoodItems);
 
-export default router;
+export default foodRouter;
