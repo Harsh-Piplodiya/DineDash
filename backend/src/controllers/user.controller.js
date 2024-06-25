@@ -1,26 +1,25 @@
-import mongoose from 'mongoose';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { User } from '../models/user.model.js';
 import validator from 'validator';
 
-const generateAccessAndRefreshTokens = async (userID) => {
+const generateAccessAndRefreshToken = async (userId) => {
     try {
-        const user = User.findById(userID);
-
-        // both the methods are from user.model
+        const user = await User.findById(userId);
+        // both the token methods are from user.model
         const accessToken = user.generateAccessToken();
         const refreshToken = user.generateRefreshToken();
 
-        // here we add value of refresh token to the object
+        // here we add value of the refresh token to the object
         user.refreshToken = refreshToken;
         // here using the save method we store the refresh token in the DB, but doing so normally will coz the DB to validate all the properties of the model but as here we only want to save the refresh token we use "validateBeforeSave" property and assign it as false. So that no validation occurs.
         await user.save({ validateBeforeSave: false });
 
         return { accessToken, refreshToken };
     } catch (error) {
-        throw new ApiError(500, "Something went wrong while generating access and refresh token.");
+        // throw new ApiError(500, "Something went wrong while generating refresh and access token.");
+        throw new ApiError(500, error.message);
     }
 }
 
@@ -111,14 +110,13 @@ const loginUser = asyncHandler(async (req, res) => {
     const isPasswordValid = await user.isPasswordCorrect(password);
 
     if(!isPasswordValid){
-        throw new ApiError(400, "Invalid credentials.")
+        throw new ApiError(401, "Invalid user credentials.");
     }
 
-    // generating tokens
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
-    const loggedInUser = await User.findById(user._id).select(" -password -refreshToken "); 
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
-    // cookies are modifiable from the front-end also but by making the options 'httpOnly' and 'secure' true,
+    // cookies are modifiable from the front-end also but by making the options 'httpOnly' and 'secure' true, 
     // cookies are only modifiable from the server.
     const options = {
         httpOnly: true,
@@ -129,7 +127,15 @@ const loginUser = asyncHandler(async (req, res) => {
     .status(200)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
-    .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "User logged in Successfully!"));
+    .json(
+        new ApiResponse(
+            200,
+            {
+                user: loggedInUser, accessToken, refreshToken
+            },
+            "User logged in Successfully."
+        )
+    )
 })
 
 export { registerUser, loginUser };

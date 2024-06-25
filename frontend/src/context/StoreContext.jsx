@@ -1,10 +1,13 @@
 import { createContext, useEffect, useState } from "react";
-import { food_list } from "../assets/assets";
+import axios from 'axios';
 
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
     const [ cartItems, setCartItems ] = useState({});
+    const url = "http://localhost:4000";
+    const [ token, setToken ] = useState("");
+    const [ food_list, setFoodList ] = useState([]);
 
     const addToCart = (itemId) => {
         if(!cartItems[itemId]){
@@ -31,6 +34,24 @@ const StoreContextProvider = (props) => {
         return totalAmount;
     }
 
+    // nethod to fetch the food info from the DB
+    const fetchFoodList = async () => {
+        const res = await axios.get(url+"/api/v1/food/list");
+        setFoodList(res.data.data); 
+    }
+
+    // method to keep us logged-in if the page is refreshed or till we logout
+    useEffect(() => {
+        async function loadData(){
+            await fetchFoodList();
+            if(localStorage.getItem("token")){
+                setToken(localStorage.getItem("token"));
+            }
+        }
+
+        loadData();
+    }, [])
+
     // now using this context we can use this food_list anywhere. 
     const contextValue = {
         food_list,
@@ -38,7 +59,10 @@ const StoreContextProvider = (props) => {
         setCartItems,
         addToCart,
         removeFromCart,
-        getTotalCartAmount
+        getTotalCartAmount,
+        url,
+        token,
+        setToken
     };
 
     return (

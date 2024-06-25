@@ -1,10 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 
-// api endpoint, routes import
-import foodRouter from './routes/food.routes.js';
-import userRouter from './routes/user.route.js';
-
 // app config
 const app = express();
 const port = 4000;
@@ -18,6 +14,10 @@ app.use(cors({
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
+
+// api endpoint, routes import
+import foodRouter from './routes/food.routes.js';
+import userRouter from './routes/user.route.js';
 
 // routes declaration 
 app.use("/api/v1/food", foodRouter);

@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 const userSchema = new Schema(
@@ -17,13 +18,16 @@ const userSchema = new Schema(
             type: String,
             required: [true, 'password is required!']
         },
-        refreshToken: {
-            type: String
-        },
         cartData: {
             type: Object,
             default: {}
-        }
+        },
+        refreshToken: {
+            type: String
+        },
+    },
+    {   
+        timestamps: true
     },
     {
         minimize: false
@@ -55,7 +59,7 @@ userSchema.methods.isPasswordCorrect = async function(password){
 // creating a method to generate access tokens
 userSchema.methods.generateAccessToken = function(){
     return jwt.sign(
-        // payload
+        //payload
         {
             _id: this._id,
             name: this.name,
@@ -72,9 +76,9 @@ userSchema.methods.generateAccessToken = function(){
 // creating a method to generate refresh tokens
 userSchema.methods.generateRefreshToken = function(){
     return jwt.sign(
-        // payload
+        //payload
         {
-            _id: this._id
+            _id: this._id,
         },
         process.env.REFRESH_TOKEN_SECRET,
         // object
@@ -85,4 +89,4 @@ userSchema.methods.generateRefreshToken = function(){
 }
 
 
-export const User = mongoose.models.User || mongoose.model("User", userSchema); // if the model is already created it'll use the old schema or else create a new one.
+export const User = mongoose.model("User", userSchema); // if the model is already created it'll use the old schema or else create a new one.
