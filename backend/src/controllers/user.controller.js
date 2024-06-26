@@ -138,4 +138,35 @@ const loginUser = asyncHandler(async (req, res) => {
     )
 })
 
-export { registerUser, loginUser };
+
+// logout method
+const logoutUser = asyncHandler(async (req, res) => {
+    try {
+        await User.findByIdAndUpdate(
+            req.user._id,
+            {
+                $unset: {
+                    refreshToken: 1 // this removes the field from the documents
+                }
+            },
+            {
+                new: true
+            }
+        )
+    
+        const options = {
+            httpOnly: true,
+            secure: true,
+        }
+    
+        return res
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(new ApiResponse(200, {}, "User Logged Out."))
+    } catch (error) {
+        throw new ApiError(500, error.message || "Something went wrong");
+    }
+})
+
+export { registerUser, loginUser, logoutUser };
