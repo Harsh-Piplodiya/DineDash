@@ -40,8 +40,9 @@ const LoginPopup = ({ setShowLogin }) => {
     
             if(res.data.success) {
                 // Set tokens in state/context and localStorage
-                setToken(res.data.data.refreshToken);
-                localStorage.setItem("token", res.data.data.refreshToken);
+                setToken(res.data.data.accessToken);
+                localStorage.setItem("accessToken", res.data.data.accessToken);
+                // localStorage.setItem("refreshToken", res.data.data.refreshToken);
                 
                 // Once the user is logged in, hide the login page
                 setShowLogin(false);

@@ -38,7 +38,7 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
         req.user = user;
         next();
     } catch (error) {
-        // console.log("JWT verification middleware error:", error.message);
+        console.log("JWT verification middleware error:", error.message);
         next(new ApiError(401, error.message || "Unauthorized request."));
     }
 });

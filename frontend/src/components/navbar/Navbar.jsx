@@ -3,16 +3,17 @@ import './Navbar.css';
 import { assets } from '../../assets/assets';
 import { Link, useNavigate } from 'react-router-dom';
 import { StoreContext } from '../../context/StoreContext';
+import axios from 'axios';
 
 const Navbar = ({ setShowLogin }) => {
 
     const [ menu, setMenu ] = useState("home");
-    const { getTotalCartAmount, token, setToken } = useContext(StoreContext);
+    const { getTotalCartAmount, token, setToken, url } = useContext(StoreContext);
 
     const navigate = useNavigate()
 
     const logout = () => {
-        localStorage.removeItem("token");
+        localStorage.removeItem("accessToken");
         setToken("");
 
         // after removing the token we'll move the user to the home page
@@ -38,7 +39,7 @@ const Navbar = ({ setShowLogin }) => {
             </div>
             {
                 !token
-                ? <button onClick={() => setShowLogin(true)} >sign in</button>
+                ? <button onClick={() => setShowLogin(true)} >Sign In</button>
                 : <div className='navbar-profile'>
                     <img src={ assets.profile_icon } alt="profile icon" />
                     <ul className="nav-profile-dropdown">
