@@ -21,11 +21,13 @@ app.use(cookieParser());
 import foodRouter from './routes/food.routes.js';
 import userRouter from './routes/user.route.js';
 import cartRouter from './routes/cart.routes.js';
+import orderRouter from './routes/order.routes.js';
 
 // routes declaration 
 app.use("/api/v1/food", foodRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/cart", cartRouter);
+app.use("/api/v1/order", orderRouter);
 
 // ex: http://localhost:4000/api/v1/food
 

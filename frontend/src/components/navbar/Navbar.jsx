@@ -12,7 +12,8 @@ const Navbar = ({ setShowLogin }) => {
 
     const navigate = useNavigate()
 
-    const logout = () => {
+    const logout = async () => {
+        await axios.post(url + "/api/v1/user/logout", {}, { headers: { Authorization: `Bearer ${token}` } });
         localStorage.removeItem("accessToken");
         setToken("");
 
