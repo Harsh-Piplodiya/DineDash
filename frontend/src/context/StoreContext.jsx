@@ -22,7 +22,7 @@ const StoreContextProvider = (props) => {
             }
 
             // calling the addToCart api to store the cart items of the user to the DB
-            await axios.post(url + "/api/v1/cart/add", { itemId }, { headers: { Authorization: `Bearer ${accessToken}` } });
+            await axios.post(url + "/api/v1/cart/add", {}, { headers: { Authorization: `Bearer ${accessToken}` } });
         } else {
             console.error("No access token found");
             alert("Please login to add items to your cart.")

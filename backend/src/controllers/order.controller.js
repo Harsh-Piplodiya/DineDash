@@ -19,17 +19,6 @@ const placeOrder = asyncHandler(async (req, res) => {
     console.log(req.body);
 
     try {
-        // order creation for razorpay
-        const options = {
-            amount: req.body.amount * 100, // in paise
-            currency: "INR",
-            receipt: `receipt_${Math.floor(Math.random() * 1000000)}`,
-            payment_capture: 1 
-        }
-    
-        const razorpayOrder = await razorpay.orders.create(options);
-        console.log('Razorpay Order:', razorpayOrder);
-
         // creating the order for DB
         const order = new Order({
             userId: req.body.userId,
@@ -44,6 +33,17 @@ const placeOrder = asyncHandler(async (req, res) => {
         // after the order is placed we need to remove the cartData
         const savedOrder = await User.findByIdAndUpdate(req.body.userId, { cartData: {} });
         console.log(savedOrder);
+
+        // order creation for razorpay
+        const options = {
+            amount: req.body.amount * 100, // in paise
+            currency: "INR",
+            receipt: `receipt_${Math.floor(Math.random() * 1000000)}`,
+            payment_capture: 1 
+        }
+    
+        const razorpayOrder = await razorpay.orders.create(options);
+        console.log('Razorpay Order:', razorpayOrder);
 
         return res
         .status(200)
@@ -79,4 +79,23 @@ const verifyPayment = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Payment verified successfully"));
 });
 
-export { placeOrder, verifyPayment };
+const fetchDetails = asyncHandler(async (req, res) => {
+    const { paymentId } = req.params;
+
+    try {
+        // using this we will fetch the the deatils of the paymnet which is done using paymentId
+        const payment = await razorpay.payments.fetch(paymentId);
+
+        if(!payment){
+            throw new ApiError(500, "Error at razorpay loading");
+        }
+
+        return res
+        .status(200)
+        .json(new ApiResponse(200, { status: payment.status, method: payment.method, amount: payment.amount, currency: payment.currency }, "Fetch Successful"));
+    } catch (error) {
+        throw new ApiError(500, "Failed to fetch");
+    }
+})
+
+export { placeOrder, verifyPayment, fetchDetails };
