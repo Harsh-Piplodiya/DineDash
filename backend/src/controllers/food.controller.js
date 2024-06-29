@@ -35,6 +35,7 @@ const addFoodItem = asyncHandler(async (req, res) => {
         await food.save();
         return res.status(201).json(new ApiResponse(201, addFoodItem, "Food item added successfully!"));
     } catch (error) {
+        console.log(error);
         throw new ApiError(500, error.message);
     }
 })
