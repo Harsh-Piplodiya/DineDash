@@ -20,7 +20,7 @@ const orderSchema = new Schema(
         },
         status : {
             type: String,
-            default: "Food processing..."
+            default: "Payment pending..."
         },
         date : {
             type: Date,
@@ -29,6 +29,9 @@ const orderSchema = new Schema(
         payment : {
             type: Boolean,
             default: false
+        },
+        razorpayOrderId : {
+            type: String
         }
     }
 )
