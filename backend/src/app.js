@@ -29,6 +29,11 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/cart", cartRouter);
 app.use("/api/v1/order", orderRouter);
 
+// path to get the api_key and url
+app.get("/api/v1/get", (req, res) => {
+    res.status(200).json({ key: process.env.RAZORPAY_API_KEY, url: process.env.URL });
+})
+
 // ex: http://localhost:4000/api/v1/food
 
 export { app };

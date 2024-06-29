@@ -6,9 +6,6 @@ import axios from 'axios';
 const PlaceOrder = () => {
   const { getTotalCartAmount, url, token, food_list, cartItems } = useContext(StoreContext);
 
-  // responseId we will get after payment is done
-  // we will get responseState after the payment is verified
-
   const [ data, setData ] = useState(
     {
       firstName: "",
@@ -49,7 +46,40 @@ const PlaceOrder = () => {
     }
 
     let response = await axios.post(url + "/api/v1/order/place", orderData, { headers: { Authorization: `Bearer ${token}` } });
-    console.log(response);
+    // console.log(response.data.data.order.amount);
+    // console.log(response.data.data.razorpayOrder.amount);
+
+    // if(response.data.success){
+    //   // const callback_url = `${url}/verify?success=true&orderId=${response.data.data.order._id}`;
+    //   // window.location.replace(callback_url);
+    // }
+
+    // getting the api_key
+    const { data: { key } } = await axios.get(url + "/api/v1/get", )
+
+    const options = {
+      key, // Enter the Key ID generated from the Dashboard
+      amount: response.data.data.razorpayOrder.amount,
+      currency: "INR",
+      name: "Harsh Piplodiya",
+      description: "Test Transaction",
+      image: "https://example.com/your_logo",
+      order_id: response.data.data.razorpayOrder.id,
+      callback_url: `${url}/api/v1/order/verify`,
+      prefill: {
+          name: `${response.data.data.order.firstName} + ${response.data.data.order.lastNam}`,
+          email: response.data.data.order.email,
+          contact: response.data.data.order.phone
+      },
+      notes: {
+          "address": "Razorpay Corporate Office"
+      },
+      theme: {
+          "color": "#141414"
+      }
+    };
+    const razor = new window.Razorpay(options);
+    razor.open();
   }
   
   return (
