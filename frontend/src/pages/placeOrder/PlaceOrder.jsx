@@ -55,7 +55,8 @@ const PlaceOrder = () => {
     // }
 
     // getting the api_key
-    const { data: { key } } = await axios.get(url + "/api/v1/get", )
+    const { data: { key } } = await axios.get(url + "/api/v1/get");
+    console.log(key);
 
     const options = {
       key, // Enter the Key ID generated from the Dashboard
@@ -67,7 +68,7 @@ const PlaceOrder = () => {
       order_id: response.data.data.razorpayOrder.id,
       callback_url: `${url}/api/v1/order/verify`,
       prefill: {
-          name: `${response.data.data.order.firstName} + ${response.data.data.order.lastNam}`,
+          name: `${response.data.data.order.firstName} + ${response.data.data.order.lastName}`,
           email: response.data.data.order.email,
           contact: response.data.data.order.phone
       },

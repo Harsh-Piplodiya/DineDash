@@ -8,7 +8,7 @@ import axios from 'axios';
 const Navbar = ({ setShowLogin }) => {
 
     const [ menu, setMenu ] = useState("home");
-    const { getTotalCartAmount, token, setToken, url } = useContext(StoreContext);
+    const { getTotalCartAmount, token, setToken, url } = useContext( StoreContext );
 
     const navigate = useNavigate()
 
