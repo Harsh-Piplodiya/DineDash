@@ -74,4 +74,4 @@ const verifyPayment = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Payment verified successfully"));
 });
 
-export { placeOrder, verifyPayment, fetchDetails };
+export { placeOrder, verifyPayment };
