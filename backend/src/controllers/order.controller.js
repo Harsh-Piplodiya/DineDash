@@ -14,8 +14,6 @@ const razorpay = new Razorpay({
 
 // placing user order for frontend
 const placeOrder = asyncHandler(async (req, res) => {
-    const frontend_url = "http://localhost:4000";
-
     console.log("Req body: ", req.body);
 
     try {

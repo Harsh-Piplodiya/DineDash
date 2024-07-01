@@ -56,7 +56,7 @@ const PlaceOrder = () => {
 
     // getting the api_key
     const { data: { key } } = await axios.get(url + "/api/v1/get");
-    console.log(key);
+    // console.log(key);
 
     const options = {
       key, // Enter the Key ID generated from the Dashboard
