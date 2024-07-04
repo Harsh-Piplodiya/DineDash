@@ -10,19 +10,13 @@ const List = () => {
   // making the funciton to call the listItems API
   const fetchList = async () => {
     const response = await axios.get(`${url}/api/v1/food/list`);
-    console.log(response.data);
 
     if(response.data.success){
       setList(response.data.data); // the response data will be saved in the setList
     } else {
-      console.log(response.data.message);
       toast.error("Error");
     }
   }
-
-  useEffect(() => {
-    fetchList();
-  }, [])
 
   const removeFoodItem = async (foodId) => {
     // console.log(foodId);

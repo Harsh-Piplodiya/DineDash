@@ -52,9 +52,9 @@ const Add = () => {
   }
 
   // used useEffect to check if the data is being stored correctly or not
-  useEffect(() => {
+  /* useEffect(() => {
     console.log(data);
-  }, [data]);
+  }, [data]); */
 
   return (
     <div className='add'>
