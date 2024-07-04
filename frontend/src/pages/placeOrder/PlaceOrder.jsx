@@ -48,7 +48,6 @@ const PlaceOrder = () => {
     let response = await axios.post(url + "/api/v1/order/place", orderData, { headers: { Authorization: `Bearer ${token}` } });
     // console.log(response.data.data.order._id);
     // console.log(response.data.data.razorpayOrder.amount);
-    console.log(response);
     let orderId = response.data.data.order._id;
 
     /* if(response.data.success){
@@ -75,7 +74,6 @@ const PlaceOrder = () => {
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,
             orderId,
-            userId,
         };
 
         const result = await axios.post(verifyUrl, paymentResponse);
