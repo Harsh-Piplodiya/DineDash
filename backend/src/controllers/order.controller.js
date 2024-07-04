@@ -14,7 +14,7 @@ const razorpay = new Razorpay({
 
 // placing user order for frontend
 const placeOrder = asyncHandler(async (req, res) => {
-    console.log("Req body: ", req.body);
+    // console.log("Req body: ", req.body);
 
     try {
         // creating the order for DB
@@ -27,9 +27,8 @@ const placeOrder = asyncHandler(async (req, res) => {
 
         // saving the data in DB
         await order.save();
-        console.log("Order: ", order);
-        // after the order is placed we need to remove the cartData
-        await User.findByIdAndUpdate(req.body.userId, { $set: { cartData: {} } });
+        // after the order payment is verified we remove the cartData also
+        await User.findByIdAndUpdate(req.user?._id, { $set: { cartData: {} } });
 
         // order creation for razorpay
         const options = {
@@ -40,7 +39,6 @@ const placeOrder = asyncHandler(async (req, res) => {
         }
     
         const razorpayOrder = await razorpay.orders.create(options);
-        console.log('Razorpay Order:', razorpayOrder);
 
         return res
         .status(200)
@@ -53,23 +51,47 @@ const placeOrder = asyncHandler(async (req, res) => {
 });
 
 const verifyPayment = asyncHandler(async (req, res) => {
-    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
-
-    const body = razorpay_order_id + "|" + razorpay_payment_id;
-
-    const expectedSignature = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
-        .update(body.toString())
-        .digest('hex');
-        console.log("sig received: ", razorpay_signature);
-        console.log("sig expected: ", expectedSignature);
-
-    if (expectedSignature !== razorpay_signature) {
-        throw new ApiError(400, "Invalid payment signature");
+    try {
+        const { razorpay_payment_id, razorpay_order_id, razorpay_signature, orderId } = req.body;
+    
+        const body = razorpay_order_id + "|" + razorpay_payment_id;
+    
+        const expectedSignature = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+            .update(body.toString())
+            .digest('hex');
+    
+        if (expectedSignature !== razorpay_signature) {
+            // if the payment fails we delete the order information
+            await Order.findByIdAndDelete(orderId);
+    
+            return res
+            .status(400)
+            .json(new ApiResponse(400, {}, "Payment not done"));
+        } else {
+            // after verifying the payment we change the status of payment to true.
+            await Order.findByIdAndUpdate(orderId, { status: "Food Processing..." }, { payment: true });
+    
+            return res
+            .status(200)
+            .json(new ApiResponse(200, {}, "Payment verified successfully"));
+        }
+    } catch (error) {
+        console.log(error);
+        throw new ApiError(500, "Some error occured while handling payment!");
     }
-
-    return res
-    .status(200)
-    .json(new ApiResponse(200, {}, "Payment verified successfully"));
 });
 
-export { placeOrder, verifyPayment };
+const userOrders = asyncHandler(async(req, res) => {
+    try {
+        const orders = await Order.find({ userId: req.user?._id });
+
+        return res
+        .status(200)
+        .json(new ApiResponse(200, orders, "Orders fetched successfully."));
+    } catch (error) {
+        console.log(error);
+        throw new ApiError(500, "Some error occured!");
+    }
+})
+
+export { placeOrder, verifyPayment, userOrders };

@@ -20,7 +20,7 @@ const orderSchema = new Schema(
         },
         status : {
             type: String,
-            default: "Food Processing..."
+            default: "Payment Not Done!"
         },
         date : {
             type: Date,

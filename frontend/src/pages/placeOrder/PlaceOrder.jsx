@@ -1,10 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './placeOrder.css';
 import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const PlaceOrder = () => {
-  const { getTotalCartAmount, url, token, food_list, cartItems } = useContext(StoreContext);
+  const { getTotalCartAmount, url, frontendUrl, token, food_list, cartItems } = useContext(StoreContext);
 
   const [ data, setData ] = useState(
     {
@@ -37,7 +38,6 @@ const PlaceOrder = () => {
         orderItems.push(itemInfo);
       }
     })
-    // console.log(orderItems);
 
     let orderData = {
       address: data,
@@ -46,17 +46,18 @@ const PlaceOrder = () => {
     }
 
     let response = await axios.post(url + "/api/v1/order/place", orderData, { headers: { Authorization: `Bearer ${token}` } });
-    // console.log(response.data.data.order.amount);
+    // console.log(response.data.data.order._id);
     // console.log(response.data.data.razorpayOrder.amount);
+    console.log(response);
+    let orderId = response.data.data.order._id;
 
-    // if(response.data.success){
-    //   // const callback_url = `${url}/verify?success=true&orderId=${response.data.data.order._id}`;
-    //   // window.location.replace(callback_url);
-    // }
+    /* if(response.data.success){
+          const callback_url = `${url}/verify?success=true&orderId=${response.data.data.order._id}`;
+          window.location.replace(callback_url);
+    } */
 
     // getting the api_key
     const { data: { key } } = await axios.get(url + "/api/v1/get");
-    // console.log(key);
 
     const options = {
       key, // Enter the Key ID generated from the Dashboard
@@ -64,9 +65,34 @@ const PlaceOrder = () => {
       currency: "INR",
       name: "Harsh Piplodiya",
       description: "Test Transaction",
-      image: "https://example.com/your_logo",
+      image: "",
       order_id: response.data.data.razorpayOrder.id,
-      callback_url: `${url}/api/v1/order/verify`,
+      // callback_url: `${url}/api/v1/order/verify`,
+      handler: async function (response) {
+        const verifyUrl = `${url}/api/v1/order/verifyPayment`;
+        const paymentResponse = {
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            orderId,
+            userId,
+        };
+
+        const result = await axios.post(verifyUrl, paymentResponse);
+        console.log(result);
+
+        let newUrl = "";
+        if(result.status == 200){
+          newUrl = `${frontendUrl}/verify?success=true&orderId=${orderId}`;
+        } else {
+          // newUrl = `${url}/verify?success=false&userId=${orderId}`;
+          // newUrl = `http://localhost:5173/verify?success=false&orderId=${orderId}`;
+
+          newUrl = `${frontendUrl}/verify?success=false&orderId=${orderId}`
+        }
+        
+        window.location.href = `${newUrl}`;
+      },
       prefill: {
           name: `${response.data.data.order.firstName} + ${response.data.data.order.lastName}`,
           email: response.data.data.order.email,
@@ -82,6 +108,16 @@ const PlaceOrder = () => {
     const razor = new window.Razorpay(options);
     razor.open();
   }
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(!token){
+      navigate('/cart');
+    } else if(getTotalCartAmount() === 0){
+      navigate('/cart');
+    }
+  }, [token])
   
   return (
     <form onSubmit={ checkoutHandler } className='place-order'>

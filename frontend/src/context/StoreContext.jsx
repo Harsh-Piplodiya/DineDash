@@ -6,7 +6,10 @@ export const StoreContext = createContext(null);
 const StoreContextProvider = (props) => {
     const [ cartItems, setCartItems ] = useState({});
     // const url = "http://localhost:4000";
+    // const frontendUrl = "http://localhost:5173"
+
     const url = "https://dinedash.onrender.com";
+    const frontendUrl = "https://dine-dash-black.vercel.app"
     const [ token, setToken ] = useState("");
     const [ food_list, setFoodList ] = useState([]);
 
@@ -63,7 +66,7 @@ const StoreContextProvider = (props) => {
         return totalAmount;
     }
 
-    // nethod to fetch the food info from the DB to display on the 'Top dishes near you'
+    // Method to fetch the food info from the DB to display on the 'Top dishes near you'
     const fetchFoodList = async () => {
         const res = await axios.get(url + "/api/v1/food/list");
         setFoodList(res.data.data); 
@@ -92,6 +95,7 @@ const StoreContextProvider = (props) => {
         removeFromCart,
         getTotalCartAmount,
         url,
+        frontendUrl,
         token,
         setToken
     };
