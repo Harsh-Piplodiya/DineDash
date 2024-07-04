@@ -14,5 +14,5 @@ export const assets ={
     parcel_icon
 }
 
-// export const url = 'http://localhost:4000'
-export const url = 'https://dinedash.onrender.com';
+// export const url = import.meta.env.VITE_LOCAL_BE_URL;
+export const url = import.meta.env.VITE_BE_URL;

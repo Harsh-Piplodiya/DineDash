@@ -5,11 +5,13 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
     const [ cartItems, setCartItems ] = useState({});
-    // const url = "http://localhost:4000";
-    // const frontendUrl = "http://localhost:5173"
+    
+    // const url = import.meta.env.VITE_LOCAL_BE_URL;
+    // const frontendUrl = import.meta.env.VITE_LOCAL_FE_URL;
 
-    const url = "https://dinedash.onrender.com";
-    const frontendUrl = "https://dine-dash-black.vercel.app"
+    const url = import.meta.env.VITE_BE_URL;
+    const frontendUrl = import.meta.env.VITE_FE_URL;
+
     const [ token, setToken ] = useState("");
     const [ food_list, setFoodList ] = useState([]);
 

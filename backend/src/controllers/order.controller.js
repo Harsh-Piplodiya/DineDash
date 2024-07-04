@@ -17,6 +17,16 @@ const placeOrder = asyncHandler(async (req, res) => {
     // console.log("Req body: ", req.body);
 
     try {
+        // order creation for razorpay
+        const options = {
+            amount: req.body.amount * 100, // in paise
+            currency: "INR",
+            receipt: `receipt_${Math.floor(Math.random() * 1000000)}`,
+            payment_capture: 1 
+        }
+    
+        const razorpayOrder = await razorpay.orders.create(options);
+        
         // creating the order for DB
         const order = new Order({
             userId: req.user?._id,
@@ -30,16 +40,6 @@ const placeOrder = asyncHandler(async (req, res) => {
         // after the order payment is verified we remove the cartData also
         await User.findByIdAndUpdate(req.user?._id, { $set: { cartData: {} } });
 
-        // order creation for razorpay
-        const options = {
-            amount: req.body.amount * 100, // in paise
-            currency: "INR",
-            receipt: `receipt_${Math.floor(Math.random() * 1000000)}`,
-            payment_capture: 1 
-        }
-    
-        const razorpayOrder = await razorpay.orders.create(options);
-
         return res
         .status(200)
         .json(new ApiResponse(200, { order, razorpayOrder }, "Order Successful"));
@@ -50,6 +50,7 @@ const placeOrder = asyncHandler(async (req, res) => {
     }
 });
 
+// verfifying whether the payment was successful or not
 const verifyPayment = asyncHandler(async (req, res) => {
     try {
         const { razorpay_payment_id, razorpay_order_id, razorpay_signature, orderId } = req.body;
@@ -69,7 +70,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
             .json(new ApiResponse(400, {}, "Payment not done"));
         } else {
             // after verifying the payment we change the status of payment to true.
-            await Order.findByIdAndUpdate(orderId, { status: "Food Processing..." }, { payment: true });
+            await Order.findByIdAndUpdate(orderId, { status: "Food Processing...", payment: true });
     
             return res
             .status(200)
@@ -81,6 +82,8 @@ const verifyPayment = asyncHandler(async (req, res) => {
     }
 });
 
+
+// function to show user their orders
 const userOrders = asyncHandler(async(req, res) => {
     try {
         const orders = await Order.find({ userId: req.user?._id });
@@ -94,4 +97,32 @@ const userOrders = asyncHandler(async(req, res) => {
     }
 })
 
-export { placeOrder, verifyPayment, userOrders };
+// function to list all the orders for the admin panel
+const listOrders = asyncHandler(async(req, res) => {
+    try {
+        const orders = await Order.find({});
+        
+        return res
+        .status(200)
+        .json(new ApiResponse(200, orders, "Orders fetched successfully!" ));
+    } catch (error) {
+        console.log(error);
+        throw new ApiError(500, "Some error occured, Orders could not be fetched.")
+    }
+})
+
+// api for updating order status
+const updateStatus = asyncHandler(async(req, res) => {
+    try {
+        await Order.findByIdAndUpdate(req.body.orderId, { status: req.body.status });
+
+        return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "Status Updated."));
+    } catch (error) {
+        console.log(error);
+        throw new ApiError(500, "Some error occured while updating the Order Status.");
+    }
+})
+
+export { placeOrder, verifyPayment, userOrders, listOrders, updateStatus };
