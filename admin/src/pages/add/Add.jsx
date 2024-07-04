@@ -44,7 +44,7 @@ const Add = () => {
       });
       setImage(false);
 
-      // console.log(response.data.message);
+      console.log(response.data.message);
       toast.success(response.data.message);
     } else {
       toast.error(response.data.message);
@@ -52,9 +52,9 @@ const Add = () => {
   }
 
   // used useEffect to check if the data is being stored correctly or not
-  // useEffect(() => {
-  //   console.log(data);
-  // }, [data]);
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   return (
     <div className='add'>
