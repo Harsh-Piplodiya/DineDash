@@ -46,20 +46,13 @@ const PlaceOrder = () => {
     }
 
     let response = await axios.post(url + "/api/v1/order/place", orderData, { headers: { Authorization: `Bearer ${token}` } });
-    // console.log(response.data.data.order._id);
-    // console.log(response.data.data.razorpayOrder.amount);
+    
     let orderId = response.data.data.order._id;
-
-    /* if(response.data.success){
-          const callback_url = `${url}/verify?success=true&orderId=${response.data.data.order._id}`;
-          window.location.replace(callback_url);
-    } */
-
     // getting the api_key
     const { data: { key } } = await axios.get(url + "/api/v1/get");
 
     const options = {
-      key, // Enter the Key ID generated from the Dashboard
+      key,
       amount: response.data.data.razorpayOrder.amount,
       currency: "INR",
       name: "Harsh Piplodiya",
@@ -83,9 +76,7 @@ const PlaceOrder = () => {
         if(result.status == 200){
           newUrl = `${frontendUrl}/verify?success=true&orderId=${orderId}`;
         } else {
-          // newUrl = `${url}/verify?success=false&userId=${orderId}`;
           // newUrl = `http://localhost:5173/verify?success=false&orderId=${orderId}`;
-
           newUrl = `${frontendUrl}/verify?success=false&orderId=${orderId}`
         }
         

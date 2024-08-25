@@ -12,7 +12,6 @@ const MyOrders = () => {
     const fetchOrders = async() => {
         const response = await axios.post(url + "/api/v1/order/userorders", {}, { headers: { Authorization: `Bearer ${token}` } });
         setData(response.data.data);
-        // console.log(response.data.data);
     }
 
     useEffect(() => {
@@ -42,7 +41,7 @@ const MyOrders = () => {
                         <p>&#x20B9;{ order.amount }.00</p>
                         <p>Items: { order.items.length }</p>
                         <p><span>&#x25cf;</span> <b>{ order.status }</b></p>
-                        <button>Track Order</button>
+                        <button onClick={fetchOrders} >Track Order</button>
                     </div>
                 )} ) 
             }

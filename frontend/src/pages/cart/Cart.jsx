@@ -4,7 +4,7 @@ import './cart.css';
 import { StoreContext } from '../../context/StoreContext';
 
 const Cart = () => {
-  const { food_list, cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
+  const { food_list, cartItems, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
   const navigate = useNavigate();
   
   return (

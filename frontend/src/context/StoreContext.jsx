@@ -17,7 +17,6 @@ const StoreContextProvider = (props) => {
 
     const addToCart = async (itemId) => {
         const accessToken = localStorage.getItem('accessToken');
-        // console.log("Access Token:", accessToken);
     
         if (token){
             if (!cartItems[itemId]) {
@@ -29,7 +28,6 @@ const StoreContextProvider = (props) => {
             // calling the addToCart api to store the cart items of the user to the DB
             await axios.post(url + "/api/v1/cart/add", {}, { headers: { Authorization: `Bearer ${accessToken}` } });
         } else {
-            console.error("No access token found");
             alert("Please login to add items to your cart.")
         }
     };
@@ -44,15 +42,12 @@ const StoreContextProvider = (props) => {
             // calling the remove from cart api to remove user's cart items from the DB as well
             await axios.post(url + "/api/v1/cart/remove", { itemId }, { headers: { Authorization: `Bearer ${accessToken}` } });
         } else {
-            console.log("No access token found");
             alert("Please login to remove items from your cart.");
         }
     }
 
-    // method to load user's cart data once he's logged in
     const loadCartData = async (token) => {
         const res = await axios.post(url + "/api/v1/cart/get", {}, { headers: { Authorization: `Bearer ${token}` } });
-        // console.log(res.data.data);
         setCartItems(res.data.data);
     }
 
@@ -68,18 +63,16 @@ const StoreContextProvider = (props) => {
         return totalAmount;
     }
 
-    // Method to fetch the food info from the DB to display on the 'Top dishes near you'
     const fetchFoodList = async () => {
         const res = await axios.get(url + "/api/v1/food/list");
         setFoodList(res.data.data); 
     }
 
-    // method to keep us logged-in if the page is refreshed or till we logout
+    //to keep us logged-in if the page is refreshed or till we logout
     useEffect(() => {
         async function loadData(){
             await fetchFoodList();
             if(localStorage.getItem("accessToken")){
-                // console.log(localStorage.getItem("accessToken"));
                 setToken(localStorage.getItem("accessToken"));
                 await loadCartData(localStorage.getItem("accessToken"));
             }
@@ -88,7 +81,6 @@ const StoreContextProvider = (props) => {
         loadData();
     }, [])
 
-    // now using this context we can use this food_list anywhere. 
     const contextValue = {
         food_list,
         cartItems,
