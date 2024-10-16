@@ -14,8 +14,6 @@ const razorpay = new Razorpay({
 
 // placing user order for frontend
 const placeOrder = asyncHandler(async (req, res) => {
-    // console.log("Req body: ", req.body);
-
     try {
         // order creation for razorpay
         const options = {
@@ -50,7 +48,7 @@ const placeOrder = asyncHandler(async (req, res) => {
     }
 });
 
-// verfifying whether the payment was successful or not
+// verfying whether the payment was successful or not
 const verifyPayment = asyncHandler(async (req, res) => {
     try {
         const { razorpay_payment_id, razorpay_order_id, razorpay_signature, orderId } = req.body;
@@ -83,7 +81,6 @@ const verifyPayment = asyncHandler(async (req, res) => {
 });
 
 
-// function to show user their orders
 const userOrders = asyncHandler(async(req, res) => {
     try {
         const orders = await Order.find({ userId: req.user?._id });
@@ -125,4 +122,10 @@ const updateStatus = asyncHandler(async(req, res) => {
     }
 })
 
-export { placeOrder, verifyPayment, userOrders, listOrders, updateStatus };
+export { 
+    placeOrder, 
+    verifyPayment, 
+    userOrders, 
+    listOrders, 
+    updateStatus
+};

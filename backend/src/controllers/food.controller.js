@@ -9,7 +9,6 @@ const addFoodItem = asyncHandler(async (req, res) => {
     const { name, description, price, category } = req.body;
     
     const imgLocalPath = req.file?.path;
-    // console.log(imgLocalPath);
     
     if(!imgLocalPath) {
         throw new ApiError(400, "Image file is required!");
@@ -52,8 +51,6 @@ const listFoodItems = asyncHandler(async (req, res) => {
 const removeFoodItems = asyncHandler(async (req, res) => {
     try {
         const food = await Food.findById(req.body.id);
-        // console.log(food);
-        // console.log(food.image);
         // to be able to delete the uploaded file from Cloudinary we needed it's public_id, inorder to get that,
         // we changed the type of image from string to an array to be able to store both the url, 
         // as well as the puclic_id and using that we're now able to delete the uploaded image from Cloudinary.
